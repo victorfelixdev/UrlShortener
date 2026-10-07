@@ -32,4 +32,22 @@ public class URLsController : ControllerBase
             });
         }
     }
+
+    [HttpGet("get/{code}")]
+    public async Task<IActionResult> GetUrlData(string code)
+    {
+        try
+        {
+            return Ok(await _urls.GetUrlAsync(code));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao buscar a URL - {ex.Message}");
+            return BadRequest(new
+            {
+                status_code = HttpStatusCode.BadRequest,
+                error_message = $"Erro ao buscar a URL - {ex.Message}"
+            });
+        }
+    }
 }

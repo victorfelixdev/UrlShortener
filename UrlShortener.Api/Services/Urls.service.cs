@@ -5,6 +5,7 @@ using UrlShortener.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
+using UrlShortener.Api.Interfaces;
 
 namespace UrlShortener.Api.Services
 {
@@ -46,10 +47,12 @@ namespace UrlShortener.Api.Services
             if ((string.IsNullOrWhiteSpace(custom_code) || custom_code == string.Empty))
             {
                 new_custom_code = GenerateNewCode();
-            } else if (IsValideCustomCode(custom_code) == false)
+            }
+            else if (IsValideCustomCode(custom_code) == false)
             {
                 throw new Exception("Código informado indisponível!");
-            } else
+            }
+            else
             {
                 return custom_code;
             }
@@ -77,6 +80,18 @@ namespace UrlShortener.Api.Services
             };
         }
 
-        
+        public async Task<GetUrlResponse> GetUrlAsync(string code)
+        {
+            
+            var url = await _db.Urls.FirstOrDefaultAsync(url => url.code == code) ?? throw new Exception("URL não encontrada!");
+            url.click_count++;
+            await _db.SaveChangesAsync();
+            return new GetUrlResponse
+            {
+                originalUrl = url.original_url,
+                accessCount = url.click_count
+            };
+            
+        }
     }
 }

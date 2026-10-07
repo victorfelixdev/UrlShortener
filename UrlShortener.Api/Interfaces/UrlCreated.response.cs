@@ -1,4 +1,4 @@
-﻿namespace UrlShortener.Api.Models
+﻿namespace UrlShortener.Api.Interfaces
 {
     public class UrlCreatedResponse
     {
