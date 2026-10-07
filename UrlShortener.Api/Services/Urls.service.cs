@@ -93,5 +93,24 @@ namespace UrlShortener.Api.Services
             };
             
         }
+
+        public async Task<GetAllUrlsResponse[]> GetAllUrlsAsync()
+        {
+            var urls = await _db.Urls.ToListAsync();
+
+            GetAllUrlsResponse[] response = urls.Select(url => new GetAllUrlsResponse
+            {
+                url_data = new UrlDataResponse
+                {
+                    code = url.code,
+                    original_url = url.original_url,
+                    created_at = url.created_at,
+                    expires_at = url.expires_at,
+                    click_count = url.click_count
+                }
+            }).ToArray();
+
+            return response;
+        }
     }
 }

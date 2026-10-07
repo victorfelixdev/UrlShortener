@@ -50,4 +50,22 @@ public class URLsController : ControllerBase
             });
         }
     }
+
+    [HttpGet("get/all")]
+    public async Task<IActionResult> GetAllUrls()
+    {
+        try
+        {
+            return Ok(await _urls.GetAllUrlsAsync());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao buscar todas as URLs - {ex.Message}");
+            return BadRequest(new
+            {
+                status_code = HttpStatusCode.BadRequest,
+                error_message = $"Erro ao buscar todas as URLs - {ex.Message}"
+            });
+        }
+    }
 }
