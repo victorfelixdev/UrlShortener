@@ -6,16 +6,20 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 using UrlShortener.Api.Interfaces;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace UrlShortener.Api.Services
 {
     public class Urls
     {
         private readonly AppDbContext _db;
+        private readonly IDistributedCache _cache;
 
-        public Urls(AppDbContext db)
+        public Urls(AppDbContext db, IDistributedCache cache)
         {
             _db = db;
+            _cache = cache;
         }
         private bool IsValideCustomCode(string custom_code)
         {
@@ -80,17 +84,36 @@ namespace UrlShortener.Api.Services
             };
         }
 
-        public async Task<GetUrlResponse> GetUrlAsync(string code)
+        public async Task<GetUrlResponse> GetUrlByCodeAsync(string code)
         {
-            
+            var cacheKey = $"url:{code}";   
+            var cachedUrl = await _cache.GetStringAsync(cacheKey);
+            if (cachedUrl != null)
+            {
+                return JsonSerializer.Deserialize<GetUrlResponse>(cachedUrl);
+            }
+
             var url = await _db.Urls.FirstOrDefaultAsync(url => url.code == code) ?? throw new Exception("URL não encontrada!");
             url.click_count++;
             await _db.SaveChangesAsync();
-            return new GetUrlResponse
+
+            var _response = new GetUrlResponse
             {
                 originalUrl = url.original_url,
                 accessCount = url.click_count
             };
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            };
+
+            await _cache.SetStringAsync(
+                cacheKey,
+                JsonSerializer.Serialize(_response),
+                cacheOptions
+            );
+            return _response;
             
         }
 

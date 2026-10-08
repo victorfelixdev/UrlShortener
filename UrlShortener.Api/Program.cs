@@ -12,12 +12,20 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var connectionString =
-    builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Configuration.GetConnectionString("PostgreSQLConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseNpgsql(
+        connectionString
+    ));
 
 builder.Services.AddScoped<Urls>();
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("CacheConnection");
+    options.InstanceName = "url-shortener:";
+});
 
 var app = builder.Build();
 

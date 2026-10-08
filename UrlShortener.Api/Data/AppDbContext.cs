@@ -9,6 +9,7 @@ namespace UrlShortener.Api.Data
             : base(options)
         {
         }
+        public DbSet<Url> Urls => Set<Url>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -16,7 +17,6 @@ namespace UrlShortener.Api.Data
                 .HasIndex(x => x.code)
                 .IsUnique();
         }
-
-        public DbSet<Url> Urls => Set<Url>();
+        
     }
 }

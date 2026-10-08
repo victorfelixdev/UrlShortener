@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Net;
 using UrlShortener.Api.Models;
 using UrlShortener.Api.Services;
@@ -10,10 +11,12 @@ namespace UrlShortener.Api.Controllers;
 public class URLsController : ControllerBase
 {
     private readonly Urls _urls;
+    private readonly IDistributedCache _cache;
 
-    public URLsController(Urls urls)
+    public URLsController(Urls urls, IDistributedCache cache)
     {
         _urls = urls;
+        _cache = cache;
     }
 
 
@@ -38,7 +41,7 @@ public class URLsController : ControllerBase
     {
         try
         {
-            return Ok(await _urls.GetUrlAsync(code));
+            return Ok(await _urls.GetUrlByCodeAsync(code));
         }
         catch (Exception ex)
         {
