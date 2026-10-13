@@ -12,7 +12,7 @@ using UrlShortener.Api.Data;
 namespace UrlShortener.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261007050805_InitialCreate")]
+    [Migration("20261013220201_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

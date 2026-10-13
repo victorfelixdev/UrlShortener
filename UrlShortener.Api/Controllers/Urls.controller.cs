@@ -20,7 +20,7 @@ public class URLsController : ControllerBase
     }
 
 
-    [HttpPost("create")]
+    [HttpPost()]
     public async Task<IActionResult> CreateUrlData(UrlData request)
     {
         try
@@ -36,7 +36,7 @@ public class URLsController : ControllerBase
         }
     }
 
-    [HttpGet("get/{code}")]
+    [HttpGet("/{code}")]
     public async Task<IActionResult> GetUrlData(string code)
     {
         try
@@ -54,7 +54,7 @@ public class URLsController : ControllerBase
         }
     }
 
-    [HttpGet("get/all")]
+    [HttpGet()]
     public async Task<IActionResult> GetAllUrls()
     {
         try

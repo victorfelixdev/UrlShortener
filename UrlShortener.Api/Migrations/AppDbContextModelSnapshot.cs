@@ -38,7 +38,9 @@ namespace UrlShortener.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateTime?>("expires_at")
                         .HasColumnType("timestamp with time zone");

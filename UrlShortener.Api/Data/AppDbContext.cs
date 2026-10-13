@@ -16,7 +16,11 @@ namespace UrlShortener.Api.Data
             modelBuilder.Entity<Url>()
                 .HasIndex(x => x.code)
                 .IsUnique();
+
+            modelBuilder.Entity<Url>()
+                .Property(u => u.created_at)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .ValueGeneratedOnAdd();                  
         }
-        
     }
 }

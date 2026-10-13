@@ -71,8 +71,7 @@ namespace UrlShortener.Api.Services
             Url url = new()
             {
                 code = customCode,
-                original_url = url_data.url,
-                click_count = 0
+                original_url = url_data.url
             };
 
             await _db.Urls.AddAsync(url);
